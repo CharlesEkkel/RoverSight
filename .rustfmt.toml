@@ -1,0 +1,3 @@
+brace_style = "PreferSameLine"
+chain_width = 50
+combine_control_expr = false
