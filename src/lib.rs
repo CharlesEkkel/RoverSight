@@ -12,14 +12,19 @@ pub fn MyApp(cx: Scope) -> Element {
         get_photos().await.unwrap_or(vec![])
     });
 
-    cx.render(match photos.value() {
-        Some(photos) => rsx!{
-            photos.iter().map(|pic| cx.render(rsx!{
-                RoverPic { photo: pic }
-            }))
-        },
-        None => rsx!{
-            div {"Whoops"}
+    cx.render(rsx!{
+        div {
+            class: "flex",
+            match photos.value() {
+                Some(photos) => rsx!{
+                    photos.iter().map(|pic| cx.render(rsx!{
+                        RoverPic { photo: pic }
+                    }))
+                },
+                None => rsx!{
+                    div {"Whoops"}
+                }
+            }
         }
     })
 }
