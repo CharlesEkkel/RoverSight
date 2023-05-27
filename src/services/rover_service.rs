@@ -32,11 +32,29 @@ struct Photos {
     photos: Vec<Photo>
 }
 
-pub async fn get_photos() -> Result<Vec<Photo>, reqwest::Error> {
+pub async fn get_photos(rover: RoverName) -> Result<Vec<Photo>, reqwest::Error> {
     let client = Client::new();
     let response = client.get(
-        "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&camera=fhaz&api_key=DEMO_KEY"
+        format!("https://api.nasa.gov/mars-photos/api/v1/rovers/{rover_str}/photos?sol=1000&camera=fhaz&api_key=DEMO_KEY"
+                , rover_str = rover.as_str())
     ).send().await?;
 
     response.json::<Photos>().await.map(|photos_obj| photos_obj.photos)
+}
+
+#[derive(PartialEq, Clone, Copy)]
+pub enum RoverName {
+    Curiosity,
+    Opportunity,
+    Spirit
+}
+
+impl RoverName {
+    fn as_str(&self) -> String {
+        String::from(match &self {
+            RoverName::Curiosity => "curiosity",
+            RoverName::Opportunity => "opportunity",
+            RoverName::Spirit => "spirit"
+        })
+    }
 }
